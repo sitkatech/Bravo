@@ -1,0 +1,5 @@
+BEGIN ZONEBUDGET
+BUD test1tr.cbc
+ZON zbud.zon
+GRB test1tr.dis.grb
+END ZONEBUDGET

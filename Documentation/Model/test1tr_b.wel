@@ -1,0 +1,23 @@
+
+begin options
+  BOUNDNAMES
+end options
+
+begin dimensions
+  MAXBOUND 10
+end dimensions
+
+#        k         i         j      flux    name 
+begin period 1
+         1         9         4     -10.00   w07
+         1         9         5     -10.00   w08
+         1        10         4     -10.00   w09
+         1        10         5     -10.00   w10
+end period
+
+begin period 2
+         1         9         4     -10.00   w07
+         1         9         5     -10.00   w08
+         1        10         4     -10.00   w09
+         1        10         5     -10.00   w10
+end period
