@@ -1,0 +1,25 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "BlobStorageModelDataFolder": "model-data",
+    "GenerateInputsQueueName": "generateinputsqueue",
+    "GenerateOutputsQueueName": "generateoutputsqueue",
+    "RunAnalysisQueueName": "runanalysisqueue",
+    "FunctionClientId": "",
+    "FunctionSecret": "",
+    "FunctionTenantId": ""
+  },
+  "Host": {
+    "LocalHttpPort": 7071,
+    "CORS": "*",
+    "CORSCredentials": false
+  },
+  "ConnectionStrings": {
+    "BravoPrimaryDatabase": "Data Source=.;Integrated Security=true;Initial Catalog=Bravo.Primary;",
+    "AzureStorageAccount": "UseDevelopmentStorage=true",
+    "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true"
+  }
+}
