@@ -159,7 +159,6 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <None Include="App.config" />
-    <EmbeddedResource Include="key.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\webjob-publish-settings.json" />
   </ItemGroup>
