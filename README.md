@@ -60,13 +60,21 @@ You can even point tests to your local Model folder to test against without runn
 During the steps above, the database should've added a test model for called 'Modflow 6 Structured'. The model folder that contains all the information Bravo needs to complete a run can be found in the "Documentation" folder, in a subfolder called "Model". For this step you'll also  need an application that can make web requests without a browser, such as Postman.
 
 1)Copy the 'Documentation/Model' folder onto your C drive, or to a place that you want to access it from (you could even leave it where it is if you'd like)
+
 2)Ensure that the "ModflowDataFolder" key in your AppSettingsConfig is pointing to wherever this model file was stored. This is going to tell the application where to pull files from for the run.
+
 3)Ensure that you've started Azure Storage Emulator and that it is currently running (if you've not done this before, make sure that you run the 'init' command prior to the 'start' command).
+
 4)Open up AzureStorageExplorer and dropdown the option for 'Local & Attached' at the top right. Then dropdown '(Emular - Default Ports)(Key)'. This is where your queues are going to appear as well as the results of your runs and even logs. If you've not run anything that uses this previously, these will all be empty.
+
 5)The APIFunctions requires a local.settings.json file that will be read when running locally. An example of this is in the 'Documentation' folder. Copy this file and place it in the APIFunctions project, making sure that the "BravoPrimaryDatabase" key matches your connection string. Everything else can be left as-is.
+
 6)With '(Emulator - Default Ports)(Key)' selected, look in the bottom right in the 'Properties' tab. This is going to hold a number of pieces of information. We want the AccountName and AccountKey. In your AppSettingsConfig, update 'AzureStorageAccountName' with the AccountName and 'AzureStorageAccountKey' with the account key.
+
 7)In Visual Studio, right click the Solution in the Solution explorer and choose 'Set Startup Projects'. We want to set both 'APIFunctions' and 'Orchestrator' to start.
+
 8)Hit 'Start' and you should see two windows pop-up, one for the APIFunctions and one for the Orchestrator. The APIFunctions window will show you all the endpoints you have to access, while the Orchestrator will show any output as the queues do their work.
+
 9)Using your web request tool, set the url to perform a post request to your 'StartRun' endpoint. The easiest way to give the input is as a raw JSON object. Here's a sample: 
 
 {
@@ -90,7 +98,9 @@ This will start a run using our model, for the 'Add a Well' scenario. "IsDiffere
 
 10)Once the run is triggered, you should get a response that states that the run has been queued and provides a RunID. If you switch to watching the 'Orchestrator' window, you'll be able to see as operations complete and any output that happens along the way.
 11)To see the run's status as it's going, you can query the 'RunResultStatus' endpoint which will return what step in the process the run is at.
+
 12)Once the process is complete, you can query the "GetAvailableRunResults" endpoint with your runID and it will show  all the available results for the run. Another way to see all the results is to go into AzureStorageExplorer, dropdown the "Blob Containers" option and select model-data. You'll then see a list of GUIDs, these are all associated with the FileStorageLocator value in the 'Runs' table of your database. Here you can see all the inputs and outputs for the run
+
 13)To get a json result of a particular file, you can query the "RetrieveResult" endpoint, passing a RunID and the name of the file to be retrieved.
 
 As development continues this documentation will be expanded, but this should be all it takes to get the application up and running.
