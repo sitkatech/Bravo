@@ -30,11 +30,45 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             }
         };
 
+        private List<StressPeriod> _getStressPeriodAnnualDataResult = new List<StressPeriod>
+        {
+            new StressPeriod
+            {
+                Days = 31,
+                NumberOfTimeSteps = 1
+            },
+            new StressPeriod
+            {
+                Days = 31,
+                NumberOfTimeSteps = 1
+            }
+        };
+
         private readonly Model _model = new Model
         {
             StartDateTime = new DateTime(2011, 1, 1),
             NumberOfStressPeriods = 2,
             AllowablePercentDiscrepancy = 1.0
+        };
+
+        private readonly Model _modelAnnual = new Model
+        {
+            StartDateTime = new DateTime(2011, 1, 1),
+            NumberOfStressPeriods = 2,
+            AllowablePercentDiscrepancy = 1.0,
+            ModelStressPeriodCustomStartDates = new ModelStressPeriodCustomStartDate[]
+            {
+                new ModelStressPeriodCustomStartDate()
+                {
+                    StressPeriod =1 ,
+                    StressPeriodStartDate = new DateTime(2011, 1,  1)
+                },
+                new ModelStressPeriodCustomStartDate()
+                {
+                    StressPeriod = 2,
+                    StressPeriodStartDate = new DateTime(2012, 1,  1)
+                }
+            }
         };
 
         [TestMethod]
@@ -73,6 +107,45 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             {
                 new ExpectedResultData {Month = 1, Year = 2011, Value = 0.008781971},
                 new ExpectedResultData {Month = 2, Year = 2011, Value = -0.063488961},
+            }, "Impacts to Baseflow", 1, 2);
+        }
+
+        [TestMethod]
+        public void CalculateImpactToBaseflow_BasicFlowAnnual()
+        {
+            _modflowFileAccessorMock.Arrange(a => a.GetAllZones())
+                .Returns(new List<string> { "A" });
+            _modflowFileAccessorMock.Arrange(a => a.GetFriendlyInputZoneName(Arg.AnyString))
+                .Returns("");
+            _modflowFileAccessorMock.Arrange(a => a.GetNumberOfSegmentReaches())
+                .Returns(1);
+            _modflowFileAccessorMock.Arrange(a => a.GetBaselineData())
+                .Returns(new List<OutputData>
+                {
+                    new OutputData{ SegmentNumber = 1, ReachNumber = 1, FlowToAquifer = 123.45},
+                    new OutputData{ SegmentNumber = 1, ReachNumber = 2, FlowToAquifer = 234.56}
+                });
+            _modflowFileAccessorMock.Arrange(a => a.GetOutputData())
+                .Returns(new List<OutputData>
+                {
+                    new OutputData{ SegmentNumber = 1, ReachNumber = 1, FlowToAquifer = 111.11},
+                    new OutputData{ SegmentNumber = 1, ReachNumber = 2, FlowToAquifer = 333.33}
+                });
+            _modflowFileAccessorMock.Arrange(a => a.GetSegmentReachZones(Arg.AnyInt, Arg.AnyInt))
+                .Returns(new List<string> { "A" });
+
+            _modflowFileAccessorMock.Arrange(a => a.GetObservedImpactToBaseflow(true)).Returns((IEnumerable<ObservedImpactToBaseflow>)null);
+
+            var sut = CreateImpactToBaseflowFileOutputSubEngineAnnual();
+
+            var result = sut.CalculateImpactToBaseflow(_modflowFileAccessorMock, _getStressPeriodAnnualDataResult, VolumeType.AcreFeet, true);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.Count);
+            TestImpactToBaseflowResult(result[0], new List<ExpectedResultData>
+            {
+                new ExpectedResultData {Month = 1, Year = 2011, Value = 0.008781971},
+                new ExpectedResultData {Month = 1, Year = 2012, Value = -0.070290863},
             }, "Impacts to Baseflow", 1, 2);
         }
 
@@ -678,7 +751,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             totalResult.Should().NotBeNull();
             totalResult.RunResultName.Should().Be(expectedTitle);
             totalResult.ResultSets.Should().NotBeNull().And.Subject.Count().Should().Be(2);
-            totalResult.ResultSets[0].Name.Should().Be("Monthly");
+            totalResult.ResultSets[0].Name.Should().Be("Rate");
             totalResult.ResultSets[0].DataType.Should().Be("Acre-Feet");
             totalResult.ResultSets[0].DisplayType.Should().Be(RunResultDisplayType.LineChart);
             totalResult.ResultSets[0].DataSeries.Should().NotBeNull().And.Subject.Count().Should().Be(expectedSeries);
@@ -701,6 +774,11 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
         private ImpactToBaseflowFileOutputSubEngine CreateImpactToBaseflowFileOutputSubEngine()
         {
             return new ImpactToBaseflowFileOutputSubEngine(_model);
+        }
+
+        private ImpactToBaseflowFileOutputSubEngine CreateImpactToBaseflowFileOutputSubEngineAnnual()
+        {
+            return new ImpactToBaseflowFileOutputSubEngine(_modelAnnual);
         }
     }
 }

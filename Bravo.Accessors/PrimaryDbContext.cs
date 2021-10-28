@@ -36,6 +36,8 @@ namespace Bravo.Accessors
         }
 
         #region Entities
+        public virtual DbSet<ModelStressPeriodCustomStartDate> ModelStressPeriodCustomStartDates { get; set; }
+
         public virtual DbSet<ModelScenario> ModelScenarios { get; set; }
         public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<Model> Models { get; set; }
@@ -59,6 +61,11 @@ namespace Bravo.Accessors
                 .HasMany(e => e.Runs)
                 .WithRequired(e => e.Image)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Model>()
+                .HasMany(e => e.ModelStressPeriodCustomStartDates)
+                .WithRequired(e => e.Model)
+                .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Model>()
                 .HasMany(e => e.ModelScenarios)

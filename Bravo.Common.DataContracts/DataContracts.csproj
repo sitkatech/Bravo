@@ -49,6 +49,7 @@
     <Compile Include="APIFunctionModels\Responses\RunResultResponseModel.cs" />
     <Compile Include="APIFunctionModels\Responses\RunSummaryResponseModel.cs" />
     <Compile Include="Container\ExitedContainer.cs" />
+    <Compile Include="Models\ModelStressPeriodCustomStartDate.cs" />
     <Compile Include="Models\ModelWithScenario.cs" />
     <Compile Include="Models\ModelScenario.cs" />
     <Compile Include="Files\FileModel.cs" />

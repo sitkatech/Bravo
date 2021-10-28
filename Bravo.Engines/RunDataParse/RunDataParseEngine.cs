@@ -75,14 +75,17 @@ namespace Bravo.Engines.RunDataParse
         private static void ValidateDates(Model model, int year, int month, List<string> errors, int i)
         {
             var date = new DateTime(year, month, 1);
-            var endDate = model.StartDateTime.AddMonths(model.NumberOfStressPeriods - 1);
+            var lastStressPeriodStartDate =
+                model.ModelStressPeriodCustomStartDates != null && model.ModelStressPeriodCustomStartDates.Length > 0
+                    ? model.ModelStressPeriodCustomStartDates[model.NumberOfStressPeriods - 1].StressPeriodStartDate
+                    : model.StartDateTime.AddMonths(model.NumberOfStressPeriods - 1);
             if (date < model.StartDateTime)
             {
                 errors.Add($"Invalid Date - Before Start Date: Record #{i + 1} - Start Date: {model.StartDateTime.Month}/{model.StartDateTime.Year} - Record Date: {month}/{year} ");
             }
-            if (date > endDate)
+            if (date > lastStressPeriodStartDate)
             {
-                errors.Add($"Invalid Date - After End Date: Record #{i + 1} - End Date: {endDate.Month}/{endDate.Year} - Record Date: {month}/{year} ");
+                errors.Add($"Invalid Date - After End Date: Record #{i + 1} - End Date: {lastStressPeriodStartDate.Month}/{lastStressPeriodStartDate.Year} - Record Date: {month}/{year} ");
             }
         }
 

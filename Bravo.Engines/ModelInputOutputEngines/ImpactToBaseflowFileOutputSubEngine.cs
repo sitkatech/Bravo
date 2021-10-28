@@ -151,20 +151,21 @@ namespace Bravo.Engines.ModelInputOutputEngines
                 }
                 result[""] = new List<RunResultSetDataPoint>();
 
-                var currDate = Model.StartDateTime;
-                foreach (var stressPeriod in stressPeriods)
+                for (var k = 0; k < stressPeriods.Count; k++)
                 {
+                    var currDate = Model.ModelStressPeriodCustomStartDates != null && Model.ModelStressPeriodCustomStartDates.Length > 0 ? Model.ModelStressPeriodCustomStartDates[k].StressPeriodStartDate : Model.StartDateTime.AddMonths(k);
+
                     var dataPoints = new Dictionary<string, RunResultSetDataPoint>();
                     foreach (var zone in result.Keys)
                     {
                         dataPoints[zone] = new RunResultSetDataPoint { Date = currDate };
                     }
 
-                    for (var i = 0; i < stressPeriod.NumberOfTimeSteps; i++)
+                    for (var i = 0; i < stressPeriods[k].NumberOfTimeSteps; i++)
                     {
                         for (var j = 0; j < numberOfSegmentReaches; j++)
                         {
-                            CalculateDataPoint(outputData, stressPeriod, dataPoints, modflowFileAccessor, outputVolumeType);
+                            CalculateDataPoint(outputData, stressPeriods[k], dataPoints, modflowFileAccessor, outputVolumeType);
                         }
                     }
 
@@ -172,7 +173,6 @@ namespace Bravo.Engines.ModelInputOutputEngines
                     {
                         result[dataPoint.Key].Add(dataPoint.Value);
                     }
-                    currDate = currDate.AddMonths(1);
                 }
                 if (outputData.MoveNext())
                 {
@@ -235,7 +235,7 @@ namespace Bravo.Engines.ModelInputOutputEngines
             result.ResultSets.Add(new RunResultSet
             {
                 DisplayType = RunResultDisplayType.LineChart,
-                Name = "Monthly",
+                Name = "Rate",
                 DataType = volumeType.GetAttribute<DisplayAttribute>()?.Name ?? volumeType.ToString(),
                 DataSeries = series
             });

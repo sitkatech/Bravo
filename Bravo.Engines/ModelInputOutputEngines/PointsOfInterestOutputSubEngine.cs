@@ -166,15 +166,20 @@ namespace Bravo.Engines.ModelInputOutputEngines
                         throw new OutputDataInvalidException("Stress period not found.");
                     }
 
-                    if (stressPeriod.NumberOfTimeSteps == baselineData.TimeStep && locations.ContainsKey(baselineData.Location))
-                    {
-                        var pointsOfInterest = locations[baselineData.Location];
-                        var date = Model.StartDateTime.AddMonths(baselineData.StressPeriod - 1);
+                    if (stressPeriod.NumberOfTimeSteps != baselineData.TimeStep ||
+                        !locations.ContainsKey(baselineData.Location)) continue;
 
-                        foreach (var pointOfInterest in pointsOfInterest)
-                        {
-                            AddDelta(runData, baselineData, date, result.DataSeries.Where(x => x.Name == pointOfInterest).SingleOrDefault());
-                        }
+                    var pointsOfInterest = locations[baselineData.Location];
+                    var stressPeriodDate = Model.ModelStressPeriodCustomStartDates != null && Model.ModelStressPeriodCustomStartDates.Length > 0 ? Model.ModelStressPeriodCustomStartDates[baselineData.StressPeriod - 1].StressPeriodStartDate : Model.StartDateTime;
+
+                    if (stressPeriodDate == Model.StartDateTime)
+                    {
+                        stressPeriodDate = stressPeriodDate.AddMonths(baselineData.StressPeriod - 1);
+                    }
+
+                    foreach (var pointOfInterest in pointsOfInterest)
+                    {
+                        AddDelta(runData, baselineData, stressPeriodDate, result.DataSeries.SingleOrDefault(x => x.Name == pointOfInterest));
                     }
                 }
             }

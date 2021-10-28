@@ -113,7 +113,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             Assert.AreEqual(3, result[0].RelatedResults.Count);
             Assert.AreEqual(2, result[0].RelatedResults[0].ResultSets.Count);
             Assert.AreEqual("aAa", result[0].RelatedResults[0].RunResultName);
-            Assert.AreEqual("Monthly", result[0].RelatedResults[0].ResultSets[0].Name);
+            Assert.AreEqual("Rate", result[0].RelatedResults[0].ResultSets[0].Name);
             Assert.AreEqual(RunResultDisplayType.LineChart, result[0].RelatedResults[0].ResultSets[0].DisplayType);
             Assert.IsNull(result[0].RelatedResults[0].ResultSets[0].MapData);
             Assert.IsNull(result[0].RelatedResults[0].ResultSets[0].TextDisplay);
@@ -136,7 +136,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             Assert.AreEqual(4, result[1].RelatedResults.Count);
             Assert.AreEqual(2, result[1].RelatedResults[0].ResultSets.Count);
             Assert.AreEqual("NameA", result[1].RelatedResults[0].RunResultName);
-            Assert.AreEqual("Monthly", result[1].RelatedResults[0].ResultSets[0].Name);
+            Assert.AreEqual("Rate", result[1].RelatedResults[0].ResultSets[0].Name);
             Assert.AreEqual(RunResultDisplayType.LineChart, result[1].RelatedResults[0].ResultSets[0].DisplayType);
             Assert.IsNull(result[1].RelatedResults[0].ResultSets[0].MapData);
             Assert.IsNull(result[1].RelatedResults[0].ResultSets[0].TextDisplay);
@@ -218,7 +218,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             Assert.AreEqual(3, result[0].RelatedResults.Count);
             Assert.AreEqual(2, result[0].RelatedResults[0].ResultSets.Count);
             Assert.AreEqual("aAa", result[0].RelatedResults[0].RunResultName);
-            Assert.AreEqual("Monthly", result[0].RelatedResults[0].ResultSets[0].Name);
+            Assert.AreEqual("Rate", result[0].RelatedResults[0].ResultSets[0].Name);
             Assert.AreEqual(RunResultDisplayType.LineChart, result[0].RelatedResults[0].ResultSets[0].DisplayType);
             Assert.IsNull(result[0].RelatedResults[0].ResultSets[0].MapData);
             Assert.IsNull(result[0].RelatedResults[0].ResultSets[0].TextDisplay);
@@ -241,7 +241,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             Assert.AreEqual(4, result[1].RelatedResults.Count);
             Assert.AreEqual(2, result[1].RelatedResults[0].ResultSets.Count);
             Assert.AreEqual("NameA", result[1].RelatedResults[0].RunResultName);
-            Assert.AreEqual("Monthly", result[1].RelatedResults[0].ResultSets[0].Name);
+            Assert.AreEqual("Rate", result[1].RelatedResults[0].ResultSets[0].Name);
             Assert.AreEqual(RunResultDisplayType.LineChart, result[1].RelatedResults[0].ResultSets[0].DisplayType);
             Assert.IsNull(result[1].RelatedResults[0].ResultSets[0].MapData);
             Assert.IsNull(result[1].RelatedResults[0].ResultSets[0].TextDisplay);
@@ -294,7 +294,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             result[0].RelatedResults.Count.Should().Be(4);
             result[0].RelatedResults[3].RunResultName.Should().Be("Zone A - Observed");
             result[0].RelatedResults[3].ResultSets.Count.Should().Be(2);
-            result[0].RelatedResults[3].ResultSets[0].Name.Should().Be("Monthly");
+            result[0].RelatedResults[3].ResultSets[0].Name.Should().Be("Rate");
             result[0].RelatedResults[3].ResultSets[0].DataSeries.Count.Should().Be(1);
             result[0].RelatedResults[3].ResultSets[0].DataSeries[0].DataPoints.Count.Should().Be(1);
             result[0].RelatedResults[3].ResultSets[0].DataSeries[0].DataPoints[0].Value.Should().Be(.00155);
@@ -307,7 +307,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             result[1].RelatedResults.Count.Should().Be(5);
             result[1].RelatedResults[4].RunResultName.Should().Be("Recharge - Observed");
             result[1].RelatedResults[4].ResultSets.Count.Should().Be(2);
-            result[1].RelatedResults[4].ResultSets[0].Name.Should().Be("Monthly");
+            result[1].RelatedResults[4].ResultSets[0].Name.Should().Be("Rate");
             result[1].RelatedResults[4].ResultSets[0].DataSeries.Count.Should().Be(1);
             result[1].RelatedResults[4].ResultSets[0].DataSeries[0].DataPoints.Count.Should().Be(1);
             result[1].RelatedResults[4].ResultSets[0].DataSeries[0].DataPoints[0].Value.Should().Be(.00155);

@@ -54,5 +54,7 @@ namespace Bravo.Common.DataContracts.Models
         public virtual BaseflowTableProcessingConfiguration BaseflowTableProcessingConfiguration { get; set; }
 
         public bool IsModflowModel { get { return string.IsNullOrWhiteSpace(ModpathExeName); } }
+        public virtual ModelStressPeriodCustomStartDate[] ModelStressPeriodCustomStartDates { get; set; }
+
     }
 }

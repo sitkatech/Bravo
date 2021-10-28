@@ -28,6 +28,7 @@ DECLARE @modPathExeName VARCHAR(50);
 DECLARE @simulationFileName VARCHAR(50);
 DECLARE @listFileName VARCHAR(50);
 DECLARE @baseflowTableProcessingConfigurationID INT;
+DECLARE @customStartDatesForStressPeriods as dbo.DateList
 /*-------------------------*/
 
 
@@ -36,7 +37,7 @@ DECLARE @baseflowTableProcessingConfigurationID INT;
 SET @imageName = 'dockerimagename';
 
 /*This is the name of the model as it will show up in the UI.*/
-SET @modelName = 'My New Model';
+SET @modelName = 'New Test';
 
 /*The start date for the model.*/
 SET @startDateTime = '2017-11-21';
@@ -51,16 +52,16 @@ SET @namFileName = 'test.nam';
 SET @runFileName = 'output.dat';
 
 /*The name of the output heatmap binary file.  This can be null if @locationMapFileName is null.*/
-SET @mapRunFileName = 'test.hds';
+SET @mapRunFileName = 'Test.hds';
 
 /*The name of the output heatmap binary file.  This can be null. */
-SET @mapDrawdownFileName = 'test_DRAWDOWN.hds';
+SET @mapDrawdownFileName = 'Test_DRAWDOWN.hds';
 
 /*These are the map settings to be used by google maps*/
-SET @mapSettings = '{zoom:8,center:{lat:40.8876131,lng:-100.0892906},mapTypeId:"terrain"}';
+SET @mapSettings = '{zoom:8,center:{lat:1.1,lng:-11.16},mapTypeId:"terrain"}';
 
 /*a set of points that makeup the border to be displayed on google maps*/
-SET @mapModelArea = '[{lat:41.0213531047554,lng:-100.367575873715},{lat:41.0213375972734,lng:-100.372360865754}]';
+SET @mapModelArea = '[{lat:1.1,lng:-11.1},{lat:11.1,lng:-11.1}]';
 
 /*the name of the zone budget executeable.  This can be null if we do not want to generate the zone budget data.*/
 SET @zoneBudgetExeName = 'zonbud.exe';
@@ -75,13 +76,13 @@ SET @allowablePercentDiscrepancy = 1.0;
 insert @scenarios(id) values(1),(4);
 
 /*array of zone name, zone number, and bounds defined a a set of points to draw the zone polygon. Sample at https://jsoneditoronline.org/?id=6efc0290cfe1ed97af040d8592a457da*/
-set @mapInputZone = '[{"ZoneNumber":"1","Name":"Zone A","Bounds":[{"Lat":40.9577,"Lng":-100.3192},{"Lat":40.9536,"Lng":-100.2725},{"Lat":40.9121,"Lng":-100.2711},{"Lat":40.9245,"Lng":-100.3192}]},{"ZoneNumber":"2","Name":"Zone B","Bounds":[{"Lat":40.8934,"Lng":-100.0066},{"Lat":40.8851,"Lng":-99.916},{"Lat":40.8477,"Lng":-99.9435}]},{"ZoneNumber":"3","Name":"Zone C","Bounds":[{"Lat":40.8072,"Lng":-99.9154},{"Lat":40.7718,"Lng":-99.9662},{"Lat":40.7801,"Lng":-99.8358}]}]';
+set @mapInputZone = '[{"ZoneNumber":"1","Name":"Zone A","Bounds":[{"Lat":1.1,"Lng":-1.1},{"Lat":1.1,"Lng":-1.1},{"Lat":40.9121,"Lng":-100.2711},{"Lat":40.9245,"Lng":-100.3192}]},{"ZoneNumber":"2","Name":"Zone B","Bounds":[{"Lat":40.8934,"Lng":-100.0066},{"Lat":40.8851,"Lng":-99.916},{"Lat":40.8477,"Lng":-99.9435}]},{"ZoneNumber":"3","Name":"Zone C","Bounds":[{"Lat":40.8072,"Lng":-99.9154},{"Lat":40.7718,"Lng":-99.9662},{"Lat":40.7801,"Lng":-99.8358}]}]';
 
 /*array of zone name, zone number, and bounds defined a a set of points to draw the zone polygon. This will be used to generate Zones for any output Maps that include Zones Sample at https://jsoneditoronline.org/?id=6efc0290cfe1ed97af040d8592a457da*/
 set @mapOutputZone = '[{"ZoneNumber":"1","Name":"Zone A","Bounds":[{"Lat":40.9577,"Lng":-100.3192},{"Lat":40.9536,"Lng":-100.2725},{"Lat":40.9121,"Lng":-100.2711},{"Lat":40.9245,"Lng":-100.3192}]},{"ZoneNumber":"2","Name":"Zone B","Bounds":[{"Lat":40.8934,"Lng":-100.0066},{"Lat":40.8851,"Lng":-99.916},{"Lat":40.8477,"Lng":-99.9435}]},{"ZoneNumber":"3","Name":"Zone C","Bounds":[{"Lat":40.8072,"Lng":-99.9154},{"Lat":40.7718,"Lng":-99.9662},{"Lat":40.7801,"Lng":-99.8358}]}]';
 
 /*Total count of stress periods for the model*/
-set @numberOfStressPeriods = 600;
+set @numberOfStressPeriods = 3;
 
 /*Canal Names*/
 set @canalData = 'canal 1,canal 2,canal 3'
@@ -95,7 +96,7 @@ set @simulationFileName = 'mp.mpsim'
 /*Modflow 6 List File name*/
 set @listFileName = 'test.lst'
 
-/*Let's Bravo know how to get the values to calculate Baseflow and Impacts to Baseflow.
+/*Let's GET know how to get the values to calculate Baseflow and Impacts to Baseflow.
 If left null, Baseflow will not be calculated. Run the following in a separate window
 to see the values currently stored in the database:
 
@@ -113,9 +114,12 @@ If the ID sent in is not null and does not match an ID present in the BaseflowTa
 */
 set @baseflowTableProcessingConfigurationID = null
 
+/*Add one value for each stress period IF the model does not have monthly stress periods. If the number of dates inserted here does not match the number of stress periods defined above, dates will not be inserted and monthly dates will be assumed*/
+--insert @customStartDatesForStressPeriods([Date]) values('2014-01-01'),('2015-01-01'),('2016-01-01');
+
 /*----- End Values to Set -----*/
 
 
 /*----- DO NOT CHANGE -----*/
-exec dbo.UpsertModel @imageName, @modelName, @startDateTime, @modflowExeName, @namFileName, @runFileName, @mapRunFileName, @mapDrawdownFileName, @mapSettings, @mapModelArea, @zoneBudgetExeName, @isDoubleSizeHeatMapOutput, @allowablePercentDiscrepancy, @scenarios, @mapInputZone, @mapOutputZone, @numberOfStressPeriods, @canalData, @modPathExeName, @simulationFileName, @listFileName, @baseflowTableProcessingConfigurationID;
+exec dbo.UpsertModel @imageName, @modelName, @startDateTime, @modflowExeName, @namFileName, @runFileName, @mapRunFileName, @mapDrawdownFileName, @mapSettings, @mapModelArea, @zoneBudgetExeName, @isDoubleSizeHeatMapOutput, @allowablePercentDiscrepancy, @scenarios, @mapInputZone, @mapOutputZone, @numberOfStressPeriods, @canalData, @modPathExeName, @simulationFileName, @listFileName, @baseflowTableProcessingConfigurationID, @customStartDatesForStressPeriods;
 /*-------------------------*/

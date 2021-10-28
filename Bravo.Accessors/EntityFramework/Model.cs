@@ -12,6 +12,7 @@ namespace Bravo.Accessors.EntityFramework
         public Model()
         {
             ModelScenarios = new HashSet<ModelScenario>();
+            ModelStressPeriodCustomStartDates = new HashSet<ModelStressPeriodCustomStartDate>();
             Runs = new HashSet<Run>();
             Scenarios = new HashSet<Scenario>();
         }
@@ -86,5 +87,9 @@ namespace Bravo.Accessors.EntityFramework
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Scenario> Scenarios { get; set; }
+        
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ModelStressPeriodCustomStartDate> ModelStressPeriodCustomStartDates { get; set; }
+
     }
 }

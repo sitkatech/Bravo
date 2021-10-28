@@ -3,6 +3,16 @@ using Bravo.Common.DataContracts.Runs;
 using System;
 using Bravo.Common.DataContracts.Models;
 using System.Collections.Generic;
+using Bravo.Accessors.EntityFramework;
+using BaseflowTableProcessingConfiguration = Bravo.Common.DataContracts.Models.BaseflowTableProcessingConfiguration;
+using Image = Bravo.Common.DataContracts.Models.Image;
+using Model = Bravo.Common.DataContracts.Models.Model;
+using ModelScenario = Bravo.Common.DataContracts.Models.ModelScenario;
+using ModelStressPeriodCustomStartDate = Bravo.Common.DataContracts.Models.ModelStressPeriodCustomStartDate;
+using Run = Bravo.Common.DataContracts.Runs.Run;
+using RunBucket = Bravo.Common.DataContracts.Runs.RunBucket;
+using Scenario = Bravo.Common.DataContracts.Models.Scenario;
+using ScenarioFile = Bravo.Common.DataContracts.Models.ScenarioFile;
 
 namespace Bravo.Accessors
 {
@@ -32,8 +42,12 @@ namespace Bravo.Accessors
                         cfg.CreateMap<EntityFramework.BaseflowTableProcessingConfiguration,
                             BaseflowTableProcessingConfiguration>().ReverseMap();
 
+                        cfg.CreateMap<EntityFramework.ModelStressPeriodCustomStartDate,
+                            ModelStressPeriodCustomStartDate>().ReverseMap();
+
                         cfg.CreateMap<EntityFramework.Model, Model>()
                             .ForMember(dest => dest.Scenarios, opts => opts.MapFrom(src => src.Scenarios))
+                            .ForMember(dest => dest.ModelStressPeriodCustomStartDates, opts => opts.MapFrom(src => src.ModelStressPeriodCustomStartDates))
                             .ForMember(dest => dest.BaseflowTableProcessingConfiguration, opts => opts.MapFrom(src => src.BaseflowTableProcessingConfiguration))
                             .ReverseMap();
 

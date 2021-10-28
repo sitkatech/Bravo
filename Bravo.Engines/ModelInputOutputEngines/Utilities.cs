@@ -6,11 +6,26 @@ namespace Bravo.Engines.ModelInputOutputEngines
 {
     internal class Utilities
     {
-        internal static StressPeriodLocationRates GetStressPeriod(int year, int month, Model model, List<StressPeriodLocationRates> stressPeriods)
+        internal static StressPeriodLocationRates GetStressPeriod(int year, int month, Model model, List<StressPeriodLocationRates> stressPeriodLocationRates)
         {
+            if (model.ModelStressPeriodCustomStartDates != null && model.ModelStressPeriodCustomStartDates.Length > 0)
+            {
+                for (int i = 0; i < model.ModelStressPeriodCustomStartDates.Length; i++)
+                {
+                    var stressPeriodDate = model.ModelStressPeriodCustomStartDates[i].StressPeriodStartDate;
+                    if (stressPeriodDate.Month == month && stressPeriodDate.Year == year)
+                    {
+                        return stressPeriodLocationRates[i];
+                    }
+                }
+
+                throw new InputDataInvalidException("Invalid date in the input file.");
+            }
+
+
             var stressPeriodIndex = (year - model.StartDateTime.Year) * 12 + month - model.StartDateTime.Month;
 
-            if (stressPeriodIndex >= stressPeriods.Count)
+            if (stressPeriodIndex >= stressPeriodLocationRates.Count)
             {
                 throw new InputDataInvalidException("Date too far in the future in the input file.");
             }
@@ -20,7 +35,7 @@ namespace Bravo.Engines.ModelInputOutputEngines
                 throw new InputDataInvalidException("Invalid date in the input file.");
             }
 
-            return stressPeriods[stressPeriodIndex];
+            return stressPeriodLocationRates[stressPeriodIndex];
         }
     }
 }

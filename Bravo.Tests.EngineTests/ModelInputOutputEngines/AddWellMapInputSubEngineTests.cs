@@ -22,7 +22,8 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
 
         private readonly Model _model = new Model
         {
-            StartDateTime = new DateTime(2011, 1, 1)
+            StartDateTime = new DateTime(2011, 1, 1),
+            NumberOfStressPeriods = 1
         };
 
         private Run _run = new Run

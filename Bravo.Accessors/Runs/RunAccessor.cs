@@ -39,7 +39,7 @@ namespace Bravo.Accessors.Runs
         {
             using (var db = DatabaseFactory.Create<PrimaryDBContext>())
             {
-                var run = (from r in db.Runs.Include("Model").Include("Scenario").Include("Scenario.Files")
+                var run = (from r in db.Runs.Include("Model").Include("Model.ModelStressPeriodCustomStartDates").Include("Scenario").Include("Scenario.Files")
                     where r.Id == runId && !r.IsDeleted
                     select r).FirstOrDefault();
 
@@ -51,7 +51,7 @@ namespace Bravo.Accessors.Runs
         {
             using (var db = DatabaseFactory.Create<PrimaryDBContext>())
             {
-                var run = (from r in db.Runs.Include("Model").Include("Scenario").Include("Image").Include("Scenario.InputImage").Include("Scenario.Files").Include("Model.BaseflowTableProcessingConfiguration")
+                var run = (from r in db.Runs.Include("Model").Include("Model.ModelStressPeriodCustomStartDates").Include("Scenario").Include("Image").Include("Scenario.InputImage").Include("Scenario.Files").Include("Model.BaseflowTableProcessingConfiguration")
                            where r.Id == runId && !r.IsDeleted
                            select r).FirstOrDefault();
 

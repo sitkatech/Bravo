@@ -62,7 +62,7 @@ namespace Bravo.Engines.ModelInputOutputEngines
                     {
                         new RunResultSet
                         {
-                            Name = "Monthly",
+                            Name = "Rate",
                             DataType = outputVolumeType.GetAttribute<DisplayAttribute>()?.Name ?? outputVolumeType.ToString(),
                             DisplayType = RunResultDisplayType.LineChart,
                             DataSeries = asrOutputData
@@ -310,7 +310,7 @@ namespace Bravo.Engines.ModelInputOutputEngines
                 {
                     for (var i = 0; i < stressPeriods.Count; i++)
                     {
-                        var date = Model.StartDateTime.AddMonths(i);
+                        var stressPeriodStartDate = Model.ModelStressPeriodCustomStartDates != null && Model.ModelStressPeriodCustomStartDates.Length > 0 ? Model.ModelStressPeriodCustomStartDates[i].StressPeriodStartDate : Model.StartDateTime.AddMonths(i);
                         var value = 0.0;
                         for (var j = 0; j < stressPeriods[i].NumberOfTimeSteps; j++)
                         {
@@ -320,7 +320,7 @@ namespace Bravo.Engines.ModelInputOutputEngines
                         }
                         currSeries.DataPoints.Add(new RunResultSetDataPoint
                         {
-                            Date = date,
+                            Date = stressPeriodStartDate,
                             Value = value
                         });
                     }

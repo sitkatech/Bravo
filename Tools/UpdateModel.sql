@@ -28,7 +28,8 @@ DECLARE @canalData VARCHAR(MAX);
 DECLARE @modPathExeName VARCHAR(50);
 DECLARE @simulationFileName VARCHAR(50);
 DECLARE @listFileName VARCHAR(50);
-DECLARE @baseflowTableProcessingConfigurationID int
+DECLARE @baseflowTableProcessingConfigurationID int;
+DECLARE @customStartDatesForStressPeriods dbo.DateList;
 /*-------------------------*/
 
 
@@ -55,5 +56,5 @@ insert @scenarios(id) values(4);
 
 
 /*----- DO NOT CHANGE -----*/
-exec dbo.UpsertModel @imageName, @modelName, @startDateTime, @modflowExeName, @namFileName, @runFileName, @mapRunFileName, @mapDrawdownFileName, @mapSettings, @mapModelArea, @zoneBudgetExeName, @isDoubleSizeHeatMapOutput, @allowablePercentDiscrepancy, @scenarios, @mapInputZone, @mapOutputZone, @numberOfStressPeriods ,@canalData, @modPathExeName, @simulationFileName, @listFileName, @baseflowTableProcessingConfigurationID;
+exec dbo.UpsertModel @imageName, @modelName, @startDateTime, @modflowExeName, @namFileName, @runFileName, @mapRunFileName, @mapDrawdownFileName, @mapSettings, @mapModelArea, @zoneBudgetExeName, @isDoubleSizeHeatMapOutput, @allowablePercentDiscrepancy, @scenarios, @mapInputZone, @mapOutputZone, @numberOfStressPeriods ,@canalData, @modPathExeName, @simulationFileName, @listFileName, @baseflowTableProcessingConfigurationID, @customStartDatesForStressPeriods;
 /*-------------------------*/

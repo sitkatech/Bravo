@@ -238,6 +238,7 @@
     <Compile Include="DtoMapper.cs" />
     <Compile Include="EntityFramework\BaseflowTableProcessingConfiguration.cs" />
     <Compile Include="EntityFramework\ModelScenario.cs" />
+    <Compile Include="EntityFramework\ModelStressPeriodCustomStartDate.cs" />
     <Compile Include="EntityFramework\RunBucketRun.cs" />
     <Compile Include="EntityFramework\RunBucket.cs" />
     <Compile Include="EntityFramework\RunGeography.cs" />

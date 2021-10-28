@@ -120,7 +120,10 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\001\018.AddCustomTypeForEnteringListOfDatesAndModelStressPeriodCustomStartDatestable.sql" />
+    <EmbeddedResource Include="Migrations\001\019.UpdateUpsertModelToIncludeCustomStartDatesForStressPeriods.sql" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\001\002.BaseflowTableProcessingConfigurationsTable.sql" />
     <EmbeddedResource Include="Migrations\001\003.DropConstraintOnColumnStoredProcedure.sql" />

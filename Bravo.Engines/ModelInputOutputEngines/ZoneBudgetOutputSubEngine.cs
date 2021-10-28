@@ -135,7 +135,7 @@ namespace Bravo.Engines.ModelInputOutputEngines
                     {
                         DataType = outputVolumeType.GetAttribute<DisplayAttribute>()?.Name ?? outputVolumeType.ToString(),
                         DisplayType = RunResultDisplayType.LineChart,
-                        Name = "Monthly",
+                        Name = "Rate",
                         DataSeries = a.Value.OrderBy(b=>b.Key).Select(b => new DataSeries
                         {
                             Name = b.Key,
@@ -168,7 +168,13 @@ namespace Bravo.Engines.ModelInputOutputEngines
                         throw new Exception($"Baseline and run records don't match [{baselineItem.Period}-{baselineItem.Step}-{baselineItem.Zone}] [{runItem.Period}-{runItem.Step}-{runItem.Zone}]");
                     }
 
-                    var date = Model.StartDateTime.AddMonths(baselineItem.Period - 1);
+                    var date = Model.ModelStressPeriodCustomStartDates != null && Model.ModelStressPeriodCustomStartDates.Length > 0 ? Model.ModelStressPeriodCustomStartDates[baselineItem.Period - 1].StressPeriodStartDate : Model.StartDateTime;
+
+                    if (date == Model.StartDateTime)
+                    {
+                        date = Model.StartDateTime.AddMonths(baselineItem.Period - 1);
+                    }
+
                     var stressPeriod = stressPeriods[baselineItem.Period - 1];
                     var zoneValue = GetFriendlyZoneBudgetName(modflowFileAccessor, baselineItem.Zone);
 
@@ -201,7 +207,12 @@ namespace Bravo.Engines.ModelInputOutputEngines
         {
             foreach (var runDataItem in runData)
             {
-                var date = Model.StartDateTime.AddMonths(runDataItem.Period - 1);
+                var date = Model.ModelStressPeriodCustomStartDates != null && Model.ModelStressPeriodCustomStartDates.Length > 0 ? Model.ModelStressPeriodCustomStartDates[runDataItem.Period - 1].StressPeriodStartDate : Model.StartDateTime;
+
+                if (date == Model.StartDateTime)
+                {
+                    date = Model.StartDateTime.AddMonths(runDataItem.Period - 1);
+                }
                 var stressPeriod = stressPeriods[runDataItem.Period - 1];
                 var zoneValue = GetFriendlyZoneBudgetName(modflowFileAccessor, runDataItem.Zone);
 

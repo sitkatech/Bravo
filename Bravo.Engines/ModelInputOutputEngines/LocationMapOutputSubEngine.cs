@@ -963,6 +963,12 @@ namespace Bravo.Engines.ModelInputOutputEngines
 
         private string GetStressPeriodLabel(int currentStressPeriod)
         {
+            if (Model.ModelStressPeriodCustomStartDates != null && Model.ModelStressPeriodCustomStartDates.Length > 0)
+            {
+                return Model.ModelStressPeriodCustomStartDates[currentStressPeriod].StressPeriodStartDate
+                    .ToString("MMMM yyyy");
+            }
+
             return Model.StartDateTime.AddMonths(currentStressPeriod).ToString("MMMM yyyy");
         }
 

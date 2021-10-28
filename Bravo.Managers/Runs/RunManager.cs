@@ -1337,10 +1337,10 @@ namespace Bravo.Managers.Runs
             var run = AccessorFactory.CreateAccessor<IRunAccessor>().FindRun(runId);
 
             //PivotedRunWellInput[] to RunWellInput[]
-            var runWillInputs = BuildWellInputData(wellData, run);
+            var runWellInputs = BuildWellInputData(wellData, run);
 
             //save parsed inputs                
-            AccessorFactory.CreateAccessor<IBlobFileAccessor>().SaveFile(ParsedWellInputFilePathForRun(run.FileStorageLocator), ConfigurationHelper.AppSettings.BlobStorageModelDataFolder, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(runWillInputs)));
+            AccessorFactory.CreateAccessor<IBlobFileAccessor>().SaveFile(ParsedWellInputFilePathForRun(run.FileStorageLocator), ConfigurationHelper.AppSettings.BlobStorageModelDataFolder, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(runWellInputs)));
 
             return true;
         }
@@ -1411,8 +1411,7 @@ namespace Bravo.Managers.Runs
         private List<RunCanalInput> BuildCanalInputsForRun(Run run)
         {
             var inputs = new List<RunCanalInput>();
-            var startDate = run.Model.StartDateTime;
-
+            
             if (string.IsNullOrWhiteSpace(run.Model.CanalData))
             {
                 throw new Exception("Trying to build canal inputs but no canal data in the database.");
@@ -1422,7 +1421,8 @@ namespace Bravo.Managers.Runs
 
             for (var i = 0; i < run.Model.NumberOfStressPeriods; i++)
             {
-                var stressPeriodDate = startDate.AddMonths(i);
+                var stressPeriodDate = run.Model.ModelStressPeriodCustomStartDates != null && run.Model.ModelStressPeriodCustomStartDates.Length > 0 ? run.Model.ModelStressPeriodCustomStartDates[i].StressPeriodStartDate : run.Model.StartDateTime.AddMonths(i);
+
                 var input = new RunCanalInput()
                 {
                     Month = stressPeriodDate.Month,
@@ -1449,12 +1449,11 @@ namespace Bravo.Managers.Runs
         private RunWellInput[] BuildWellInputData(PivotedRunWellInput[] data, Run run)
         {
             var result = new List<RunWellInput>();
-            var startDate = run.Model.StartDateTime;
-
+            
 
             for (var i = 0; i < run.Model.NumberOfStressPeriods; i++)
             {
-                var stressPeriodDate = startDate.AddMonths(i);
+                var stressPeriodDate = run.Model.ModelStressPeriodCustomStartDates != null && run.Model.ModelStressPeriodCustomStartDates.Length > 0 ? run.Model.ModelStressPeriodCustomStartDates[i].StressPeriodStartDate : run.Model.StartDateTime.AddMonths(i);
 
                 var stressPeriodInput = new RunWellInput()
                 {

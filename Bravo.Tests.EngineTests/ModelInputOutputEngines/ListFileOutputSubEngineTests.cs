@@ -39,6 +39,20 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             }
         };
 
+        private List<StressPeriod> _getStressPeriodDataAnnualResult = new List<StressPeriod>
+        {
+            new StressPeriod
+            {
+                Days = 31,
+                NumberOfTimeSteps = 1
+            },
+            new StressPeriod
+            {
+                Days = 31,
+                NumberOfTimeSteps = 1
+            }
+        };
+
         [TestMethod]
         public void GenerateListFileOutput_PercentDiscrepancy_Total_TooHigh_EndOfFile()
         {
@@ -177,7 +191,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             Assert.AreEqual(2, result.OutputResults.Count);
             result.OutputResults[0].RunResultName.Should().Be("Water Budget");
             result.OutputResults[0].ResultSets.Count.Should().Be(2);
-            result.OutputResults[0].ResultSets[0].Name.Should().Be("Monthly");
+            result.OutputResults[0].ResultSets[0].Name.Should().Be("Rate");
             result.OutputResults[0].ResultSets[0].DataSeries.Count.Should().Be(1);
             result.OutputResults[0].ResultSets[0].DataSeries[0].Name.Should().Be("AAA");
             result.OutputResults[0].ResultSets[0].DataSeries[0].DataPoints.Count.Should().Be(2);
@@ -185,6 +199,64 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             result.OutputResults[0].ResultSets[1].DataSeries.Count.Should().Be(1);
             result.OutputResults[0].ResultSets[1].DataSeries[0].Name.Should().Be("AAA");
             result.OutputResults[0].ResultSets[1].DataSeries[0].DataPoints.Count.Should().Be(2);
+
+            TestListFileResult(result.OutputResults[1], listFileData);
+        }
+
+        [TestMethod]
+        public void GenerateListFileOutput_NonDifferentialAnnual()
+        {
+            var totalFirst = "0.00";
+            var stepFirst = "0.00";
+            var totalLast = "1.01";
+            var stepLast = "0.00";
+
+            var listFileData = new List<string>
+            {
+                $"  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    1, STRESS PERIOD   1",
+                $" AAA =           {totalFirst}     AAA =          {stepFirst}",
+                $" TOTAL IN =           {0}     TOTAL IN =           {0}",
+                $" PERCENT DISCREPANCY =           {totalFirst}     PERCENT DISCREPANCY =          {stepFirst}",
+                $"  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    1, STRESS PERIOD   1",
+                $" AAA =           {totalLast}     AAA =           {stepLast}",
+                $" TOTAL IN =           {0}     TOTAL IN =           {0}",
+                $" PERCENT DISCREPANCY =           {totalLast}     PERCENT DISCREPANCY =           {stepLast}",
+            };
+            _modflowFileAccessorMock.Arrange(a => a.GetRunListFileLines())
+                .Returns(listFileData);
+            _modflowFileAccessorMock.Arrange(a => a.GetListFileOutputFileLines())
+                .Returns(listFileData);
+
+            _modflowFileAccessorMock.Arrange(a => a.GetAsrDataNameMap())
+                .Returns(new List<AsrDataMap>
+                {
+                    new AsrDataMap { Key = "AAA", Name = "AAA" }
+                });
+
+            _modflowFileAccessorMock.Arrange(a => a.GetObservedZoneBudget(false)).Returns((IEnumerable<ObservedZoneBudgetData>)null);
+
+            var sut = CreateListFileOutputSubEngineAnnual();
+            var result = sut.GenerateListFileOutput(_modflowFileAccessorMock, _getStressPeriodDataAnnualResult, VolumeType.AcreFeet, false);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Exception);
+            Assert.IsInstanceOfType(result.Exception, typeof(OutputDataInvalidException));
+            Assert.IsNotNull(result.OutputResults);
+            Assert.AreEqual(2, result.OutputResults.Count);
+            result.OutputResults[0].RunResultName.Should().Be("Water Budget");
+            result.OutputResults[0].ResultSets.Count.Should().Be(2);
+            result.OutputResults[0].ResultSets[0].Name.Should().Be("Rate");
+            result.OutputResults[0].ResultSets[0].DataSeries.Count.Should().Be(1);
+            result.OutputResults[0].ResultSets[0].DataSeries[0].Name.Should().Be("AAA");
+            result.OutputResults[0].ResultSets[0].DataSeries[0].DataPoints.Count.Should().Be(2);
+            result.OutputResults[0].ResultSets[0].DataSeries[0].DataPoints[1].Date.Should()
+                .Be(new DateTime(2012, 1, 1));
+            result.OutputResults[0].ResultSets[1].Name.Should().Be("Cumulative");
+            result.OutputResults[0].ResultSets[1].DataSeries.Count.Should().Be(1);
+            result.OutputResults[0].ResultSets[1].DataSeries[0].Name.Should().Be("AAA");
+            result.OutputResults[0].ResultSets[1].DataSeries[0].DataPoints.Count.Should().Be(2);
+            result.OutputResults[0].ResultSets[0].DataSeries[0].DataPoints[1].Date.Should()
+                .Be(new DateTime(2012, 1, 1));
 
             TestListFileResult(result.OutputResults[1], listFileData);
         }
@@ -243,7 +315,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             Assert.AreEqual(2, result.OutputResults.Count);
             result.OutputResults[0].RunResultName.Should().Be("Water Budget");
             result.OutputResults[0].ResultSets.Count.Should().Be(2);
-            result.OutputResults[0].ResultSets[0].Name.Should().Be("Monthly");
+            result.OutputResults[0].ResultSets[0].Name.Should().Be("Rate");
             result.OutputResults[0].ResultSets[0].DataSeries.Count.Should().Be(1);
             result.OutputResults[0].ResultSets[0].DataSeries[0].Name.Should().Be("WEL");
             result.OutputResults[0].ResultSets[0].DataSeries[0].DataPoints.Count.Should().Be(2);
@@ -311,7 +383,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             Assert.AreEqual(2, result.OutputResults.Count);
             result.OutputResults[0].RunResultName.Should().Be("Water Budget");
             result.OutputResults[0].ResultSets.Count.Should().Be(2);
-            result.OutputResults[0].ResultSets[0].Name.Should().Be("Monthly");
+            result.OutputResults[0].ResultSets[0].Name.Should().Be("Rate");
             result.OutputResults[0].ResultSets[0].DataSeries.Count.Should().Be(1);
             result.OutputResults[0].ResultSets[0].DataSeries[0].Name.Should().Be("WEL");
             result.OutputResults[0].ResultSets[0].DataSeries[0].DataPoints.Count.Should().Be(2);
@@ -384,7 +456,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             Assert.AreEqual(2, result.OutputResults.Count);
             result.OutputResults[0].RunResultName.Should().Be("Water Budget");
             result.OutputResults[0].ResultSets.Count.Should().Be(2);
-            result.OutputResults[0].ResultSets[0].Name.Should().Be("Monthly");
+            result.OutputResults[0].ResultSets[0].Name.Should().Be("Rate");
             result.OutputResults[0].ResultSets[0].DataSeries.Count.Should().Be(2);
             result.OutputResults[0].ResultSets[0].DataSeries[0].Name.Should().Be("BEL");
             result.OutputResults[0].ResultSets[0].DataSeries[0].DataPoints.Count.Should().Be(2);
@@ -459,7 +531,7 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
             Assert.AreEqual(2, result.OutputResults.Count);
             result.OutputResults[0].RunResultName.Should().Be("Water Budget");
             result.OutputResults[0].ResultSets.Count.Should().Be(2);
-            result.OutputResults[0].ResultSets[0].Name.Should().Be("Monthly");
+            result.OutputResults[0].ResultSets[0].Name.Should().Be("Rate");
             result.OutputResults[0].ResultSets[0].DataSeries.Count.Should().Be(2);
             result.OutputResults[0].ResultSets[0].DataSeries[0].Name.Should().Be("AAA");
             result.OutputResults[0].ResultSets[0].DataSeries[0].DataPoints.Count.Should().Be(2);
@@ -561,6 +633,25 @@ namespace Bravo.Tests.EngineTests.ModelInputOutputEngines
         private ListFileOutputSubEngine CreateListFileOutputSubEngine()
         {
             _model.NumberOfStressPeriods = _getStressPeriodDataResult.Count;
+            return new ListFileOutputSubEngine(_model);
+        }
+
+        private ListFileOutputSubEngine CreateListFileOutputSubEngineAnnual()
+        {
+            _model.NumberOfStressPeriods = _getStressPeriodDataResult.Count;
+            _model.ModelStressPeriodCustomStartDates = new ModelStressPeriodCustomStartDate[]
+            {
+                new ModelStressPeriodCustomStartDate()
+                {
+                    StressPeriod = 1,
+                    StressPeriodStartDate = new DateTime(2011, 1,  1)
+                },
+                new ModelStressPeriodCustomStartDate() {
+                    StressPeriodStartDate = new DateTime(2012, 1, 1),
+                    StressPeriod = 2
+                }
+
+            };
             return new ListFileOutputSubEngine(_model);
         }
     }

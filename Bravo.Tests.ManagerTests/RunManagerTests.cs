@@ -114,7 +114,7 @@ namespace Bravo.Tests.ManagerTests
                 });
             _blobFileAccessorMock.Arrange(a => a.GetFile(Arg.AnyString, Arg.AnyString)).Returns(fakeMapData);
 
-            _runAccessorMock.Arrange(a => a.FindRunWithImage(12))
+            _runAccessorMock.Arrange(a => a.FindRun(12))
                 .Returns(new Run
                 {
                     Status = RunStatus.Complete,
@@ -199,7 +199,7 @@ namespace Bravo.Tests.ManagerTests
                 ModelId = 2
             };
 
-            _runAccessorMock.Arrange(a => a.FindRunWithImage(Arg.AnyInt)).Returns(existingRun);
+            _runAccessorMock.Arrange(a => a.FindRun(Arg.AnyInt)).Returns(existingRun);
             _runAccessorMock.Arrange(a => a.CreateOrUpdateRun(Arg.IsAny<Run>())).Returns(existingRun);
 
             _blobFileAccessorMock.Arrange(a => a.GetFile(Arg.AnyString, Arg.AnyString)).Returns(Encoding.UTF8.GetBytes("test"));
